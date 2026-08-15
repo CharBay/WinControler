@@ -14,13 +14,11 @@ jobs:
       - name: check
         uses: actions/checkout@v4
 
-      - name: install MinGW
-        run: |
-          choco install mingw -y
-          echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
+      - name: Setup VS Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: build
-        run: g++ -std=c++17 win.cpp -o wc.exe
+        run: cl /EHsc win.cpp /Fe:wc.exe /link ws2_32.lib gdi32.lib user32.lib
 
       - name: up
         uses: actions/upload-artifact@v4
