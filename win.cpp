@@ -51,9 +51,9 @@ input, textarea { background: #0a0a1a; border: 1px solid #0f3460; color: #fff; p
 </head>
 <body>
 <div class="container">
-<h1 class="title">🖥️ 远程控制系统</h1>
+<h1 class="title">远程控制系统</h1>
 <div class="control-group">
-<h3>🖱️ 鼠标控制</h3>
+<h3>鼠标控制</h3>
 <div class="grid">
 <div>
 <label>X: <input type="number" id="mx" value="500"></label>
@@ -70,7 +70,7 @@ input, textarea { background: #0a0a1a; border: 1px solid #0f3460; color: #fff; p
 </div>
 </div>
 <div class="control-group">
-<h3>⌨️ 键盘控制</h3>
+<h3>键盘控制</h3>
 <div class="grid">
 <div>
 <label>按键码: <input type="number" id="keycode" value="65" placeholder="虚拟键码"></label>
@@ -89,7 +89,7 @@ input, textarea { background: #0a0a1a; border: 1px solid #0f3460; color: #fff; p
 </div>
 </div>
 <div class="control-group">
-<h3>⚡ 快捷命令</h3>
+<h3>快捷命令</h3>
 <div class="btn-group">
 <button class="btn" onclick="sendCmd('key_press?code=67&ctrl=1')">Ctrl+C</button>
 <button class="btn" onclick="sendCmd('key_press?code=86&ctrl=1')">Ctrl+V</button>
@@ -99,7 +99,7 @@ input, textarea { background: #0a0a1a; border: 1px solid #0f3460; color: #fff; p
 </div>
 </div>
 <div class="control-group">
-<h3>💻 系统命令</h3>
+<h3>系统命令</h3>
 <div class="btn-group">
 <button class="btn" onclick="sendCmd('system_cmd?cmd=calc')">计算器</button>
 <button class="btn" onclick="sendCmd('system_cmd?cmd=notepad')">记事本</button>
@@ -114,16 +114,73 @@ function sendCmd(cmd) {
 fetch('/' + cmd)
 .then(response => response.text())
 .then(data => {
-document.getElementById('status').textContent = '✓ ' + data;
+document.getElementById('status').textContent = "✓ " + data;
 })
 .catch(err => {
-document.getElementById('status').textContent = '✗ 错误: ' + err;
+document.getElementById('status').textContent = "✗ 错误: " + err;
 });
 }
 </script>
 </body>
 </html>
-)";response="HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: "+std::to_string(html.length())+"\r\n\r\n"+html;}else if(path=="/mouse_move"){int x=0,y=0;sscanf(query.c_str(),"x=%d&y=%d",&x,&y);InputController::MouseMove(x,y);response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nMouse moved to "+std::to_string(x)+","+std::to_string(y);}else if(path=="/mouse_click"){int btn=0;sscanf(query.c_str(),"btn=%d",&btn);InputController::MouseClick(btn);response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nMouse clicked button "+std::to_string(btn);}else if(path=="/mouse_scroll"){int delta=0;sscanf(query.c_str(),"delta=%d",&delta);InputController::MouseScroll(delta);response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nScrolled "+std::to_string(delta);}else if(path=="/key_press"){int code=0,ctrl=0,shift=0,alt=0;sscanf(query.c_str(),"code=%d&ctrl=%d&shift=%d&alt=%d",&code,&ctrl,&shift,&alt);InputController::KeyboardInput((WORD)code,ctrl!=0,shift!=0,alt!=0);response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nKey pressed "+std::to_string(code);}else if(path=="/type_text"){std::string text;size_t pos=query.find("text=");if(pos!=std::string::npos){text=query.substr(pos+5);for(char& c:text)if(c=='+')c=' ';std::string decoded;for(size_t i=0;i<text.length();i++){if(text[i]=='%'&&i+2<text.length()){char hex[3]={text[i+1],text[i+2],0};decoded+=(char)strtol(hex,NULL,16);i+=2;}else{decoded+=text[i];}}InputController::TypeText(decoded);}response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nText typed";}else if(path=="/system_cmd"){std::string cmd;size_t pos=query.find("cmd=");if(pos!=std::string::npos){cmd=query.substr(pos+4);std::string decoded;for(size_t i=0;i<cmd.length();i++){if(cmd[i]=='%'&&i+2<cmd.length()){char hex[3]={cmd[i+1],cmd[i+2],0};decoded+=(char)strtol(hex,NULL,16);i+=2;}else{decoded+=cmd[i];}}RunHiddenProcess(decoded);}response="HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nCommand executed";}else{response="HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found";}return response;}
+)";
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: " + std::to_string(html.length()) + "\r\n\r\n" + html;
+} else if(path=="/mouse_move") {
+    int x=0,y=0; sscanf(query.c_str(),"x=%d&y=%d",&x,&y);
+    InputController::MouseMove(x,y);
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nMouse moved to " + std::to_string(x) + "," + std::to_string(y);
+} else if(path=="/mouse_click") {
+    int btn=0; sscanf(query.c_str(),"btn=%d",&btn);
+    InputController::MouseClick(btn);
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nMouse clicked button " + std::to_string(btn);
+} else if(path=="/mouse_scroll") {
+    int delta=0; sscanf(query.c_str(),"delta=%d",&delta);
+    InputController::MouseScroll(delta);
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nScrolled " + std::to_string(delta);
+} else if(path=="/key_press") {
+    int code=0,ctrl=0,shift=0,alt=0; sscanf(query.c_str(),"code=%d&ctrl=%d&shift=%d&alt=%d",&code,&ctrl,&shift,&alt);
+    InputController::KeyboardInput((WORD)code,ctrl!=0,shift!=0,alt!=0);
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nKey pressed " + std::to_string(code);
+} else if(path=="/type_text") {
+    std::string text; size_t pos=query.find("text=");
+    if(pos!=std::string::npos) {
+        text=query.substr(pos+5);
+        for(char& c:text) if(c=='+') c=' ';
+        std::string decoded;
+        for(size_t i=0;i<text.length();i++) {
+            if(text[i]=='%' && i+2<text.length()) {
+                char hex[3]={text[i+1],text[i+2],0};
+                decoded += (char)strtol(hex,NULL,16);
+                i+=2;
+            } else {
+                decoded += text[i];
+            }
+        }
+        InputController::TypeText(decoded);
+    }
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nText typed";
+} else if(path=="/system_cmd") {
+    std::string cmd; size_t pos=query.find("cmd=");
+    if(pos!=std::string::npos) {
+        cmd=query.substr(pos+4);
+        std::string decoded;
+        for(size_t i=0;i<cmd.length();i++) {
+            if(cmd[i]=='%' && i+2<cmd.length()) {
+                char hex[3]={cmd[i+1],cmd[i+2],0};
+                decoded += (char)strtol(hex,NULL,16);
+                i+=2;
+            } else {
+                decoded += cmd[i];
+            }
+        }
+        RunHiddenProcess(decoded);
+    }
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nCommand executed";
+} else {
+    response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found";
+}
+return response;
+}
 void HandleHTTPClient(SOCKET clientSocket){char buffer[BUFFER_SIZE];int bytesReceived=recv(clientSocket,buffer,BUFFER_SIZE-1,0);if(bytesReceived<=0){closesocket(clientSocket);return;}buffer[bytesReceived]='\0';std::string path,query;std::string method=ParseHTTPRequest(buffer,path,query);if(method=="GET"){std::string response=HandleHTTPRequest(path,query);send(clientSocket,response.c_str(),response.length(),0);}else{const char* response="HTTP/1.1 405 Method Not Allowed\r\n\r\n";send(clientSocket,response,strlen(response),0);}closesocket(clientSocket);}
 SOCKET CreateHTTPServer(){SOCKET serverSocket=socket(AF_INET,SOCK_STREAM,0);if(serverSocket==INVALID_SOCKET)return INVALID_SOCKET;int reuse=1;setsockopt(serverSocket,SOL_SOCKET,SO_REUSEADDR,(char*)&reuse,sizeof(reuse));sockaddr_in serverAddr;serverAddr.sin_family=AF_INET;serverAddr.sin_addr.s_addr=INADDR_ANY;serverAddr.sin_port=htons(HTTP_PORT);if(bind(serverSocket,(sockaddr*)&serverAddr,sizeof(serverAddr))==SOCKET_ERROR){closesocket(serverSocket);return INVALID_SOCKET;}if(listen(serverSocket,10)==SOCKET_ERROR){closesocket(serverSocket);return INVALID_SOCKET;}return serverSocket;}
 SOCKET CreateServer(){SOCKET serverSocket=socket(AF_INET,SOCK_STREAM,0);if(serverSocket==INVALID_SOCKET)return INVALID_SOCKET;int reuse=1;setsockopt(serverSocket,SOL_SOCKET,SO_REUSEADDR,(char*)&reuse,sizeof(reuse));int timeout=30000;setsockopt(serverSocket,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(timeout));setsockopt(serverSocket,SOL_SOCKET,SO_SNDTIMEO,(char*)&timeout,sizeof(timeout));sockaddr_in serverAddr;serverAddr.sin_family=AF_INET;serverAddr.sin_addr.s_addr=INADDR_ANY;serverAddr.sin_port=htons(PORT);if(bind(serverSocket,(sockaddr*)&serverAddr,sizeof(serverAddr))==SOCKET_ERROR){closesocket(serverSocket);return INVALID_SOCKET;}if(listen(serverSocket,5)==SOCKET_ERROR){closesocket(serverSocket);return INVALID_SOCKET;}return serverSocket;}
