@@ -14,11 +14,13 @@ jobs:
       - name: check
         uses: actions/checkout@v4
 
-      - name: Setup VS Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x64
 
       - name: build
-        run: cl /EHsc win.cpp /Fe:wc.exe /link ws2_32.lib gdi32.lib user32.lib
+        run: g++ -std=c++11 win.cpp -o wc.exe -lws2_32 -lgdi32
 
       - name: up
         uses: actions/upload-artifact@v4
