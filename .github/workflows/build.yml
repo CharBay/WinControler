@@ -22,7 +22,7 @@ jobs:
 
       - name: build with MSYS2
         shell: msys2 {0}
-        run: g++ -std=c++11 win.cpp -o wc.exe -lws2_32 -lgdi32
+        run: g++ -static -std=c++11 win.cpp -o wc.exe -lws2_32 -lgdi32
 
       - name: up
         uses: actions/upload-artifact@v4
