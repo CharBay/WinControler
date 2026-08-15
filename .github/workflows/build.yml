@@ -11,22 +11,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-
       - name: check
         uses: actions/checkout@v4
 
-
-      - name: init MSBuild 
-        uses: microsoft/setup-msbuild@v1.1
-
+      - name: install MinGW
+        run: |
+          choco install mingw -y
+          echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
       - name: build
-        run: |
-          cl /EHsc /Fe:wc.exe win.cpp
-
+        run: g++ -std=c++17 win.cpp -o wc.exe
 
       - name: up
         uses: actions/upload-artifact@v4
         with:
           name: wc
-          path: src/wc.exe
+          path: wc.exe
