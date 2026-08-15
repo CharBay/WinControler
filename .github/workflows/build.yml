@@ -22,11 +22,11 @@ jobs:
 
       - name: build
         run: |
-          cl /EHsc /Fe:relase/myapp.exe main.cpp
+          cl /EHsc /Fe:wc.exe win.cpp
 
 
       - name: up
         uses: actions/upload-artifact@v4
         with:
-          name: myapp-win32
-          path: myapp.exe
+          name: wc
+          path: src/wc.exe
