@@ -1,0 +1,32 @@
+name: auto-building
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+
+      - name: check
+        uses: actions/checkout@v4
+
+
+      - name: init MSBuild 
+        uses: microsoft/setup-msbuild@v1.1
+
+
+      - name: build
+        run: |
+          cl /EHsc /Fe:relase/myapp.exe main.cpp
+
+
+      - name: up
+        uses: actions/upload-artifact@v4
+        with:
+          name: myapp-win32
+          path: myapp.exe
